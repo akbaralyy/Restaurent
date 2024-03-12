@@ -1,5 +1,9 @@
 import app from "./app.js";
 
-app.listen(process.env.PORT, ()=>{
-    console.log(`SERVER HAS STARTED AT PORT ${process.env.PORT}`);
-})
+// Define the port number to listen on
+const PORT = process.env.PORT || 4000;
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
