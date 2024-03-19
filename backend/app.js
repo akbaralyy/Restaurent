@@ -5,32 +5,31 @@ import { errorMiddleware } from "./error/error.js";
 import reservationRouter from "./routes/reservationRoute.js";
 import { dbConnection } from "./database/dbConnection.js";
 
-const app = express();
+// Load environment variables
 dotenv.config({ path: "./config/config.env" });
+let corsAllow = {
+  origin :process.env.FRONTEND_URL,
+  methods :"PUT,GET,POST,PATCH,DELETE,HEAD",
+  credentials : true
+}
 
-const allowedOrigins = [process.env.FRONTEND_URL]; // Update with your frontend URL
+const app = express();
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Check if the request origin is in the allowedOrigins array
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["POST"],
-    credentials: true,
-  })
-);
-
+app.use(cors(corsAllow));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/reservation", reservationRouter);
+app.get("/", (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    message: "HELLO WORLD AGAIN"
+  });
+});
 
+// Establish database connection
 dbConnection();
+
 app.use(errorMiddleware);
 
 export default app;
